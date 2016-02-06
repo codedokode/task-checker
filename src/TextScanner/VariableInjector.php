@@ -4,7 +4,7 @@ namespace TextScanner;
 
 class VariableInjector
 {
-    public function inject(Text $program, array $variables, &$errors = array())
+    public function inject(TokenArray $program, array $variables, &$errors = array())
     {
         $errors = [];
         $replacements = [];
@@ -33,7 +33,7 @@ class VariableInjector
     /**
      * Find code like $var = EXPR;
      */
-    private function findVariableDefinition(Text $program, $varName)
+    private function findVariableDefinition(TokenArray $program, $varName)
     {
         $scanner = $program->scan();
         $varString = '$' . $varName;

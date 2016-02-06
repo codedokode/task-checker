@@ -2,7 +2,7 @@
 
 namespace tests;
 
-use TextScanner\Text;
+use TextScanner\TokenArray;
 use TextScanner\VariableInjector;
 
 class VariableInjectTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +16,7 @@ class VariableInjectTest extends \PHPUnit_Framework_TestCase
 
     public function testInjection()
     {
-        $code = Text::fromCode('<?php $a = 1; $b = "";');
+        $code = TokenArray::fromCode('<?php $a = 1; $b = "";');
         $vars = ['a' => 2, 'b' => 'hello'];
         $output = $this->injector->inject($code, $vars, $errors);
 
@@ -26,7 +26,7 @@ class VariableInjectTest extends \PHPUnit_Framework_TestCase
 
     public function testVarNotFound()
     {
-        $code = Text::fromCode('<?php hello();');
+        $code = TokenArray::fromCode('<?php hello();');
         $vars = ['a' => 1];
         $output= $this->injector->inject($code, $vars, $errors);
 
@@ -38,11 +38,50 @@ class VariableInjectTest extends \PHPUnit_Framework_TestCase
     
     public function testDeclNotFound()
     {
-        $code = Text::fromCode('<?php $a + $b; hello($a, $b); $a == $b;');
+        $code = TokenArray::fromCode('<?php $a + $b; hello($a, $b); $a == $b;');
         $vars = ['a' => 1] ;
 
         $output = $this->injector->inject($code, $vars, $errors);
 
         $this->assertCount(1, $errors);
+    }    
+
+    public function testCanInjectSeveralTimes()
+    {
+        $code = TokenArray::fromCode('<?php $a = 0; $b = 0;');
+        $vars1 = ['a' => 1];
+        $vars2 = ['b' => 2];
+
+        $output1 = $this->injector->inject($code, $vars1, $errors);
+        $this->assertNotEmpty($output1);
+
+        $this->assertVarHasValue('a', 1, $output1);
+        $this->assertVarHasValue('b', 0, $output1);
+        $this->assertVarNotHasValue('a', 0, $output1);
+
+        $output2 = $this->injector->inject($code, $vars2, $errors);
+        $this->assertNotEmpty($output2);
+
+        $this->assertVarHasValue('a', 0, $output2);
+        $this->assertVarHasValue('b', 2, $output2);
+        $this->assertVarNotHasValue('b', 0, $output2);
+    }
+
+    private function assertVarHasValue($varName, $valueString, $code)
+    {
+        $varNameRe = preg_quote($varName);
+        $valueRe = preg_quote($valueString);
+        $regexp = "/\${$varNameRe}\s*=\s*({$valueRe})\s*;/";
+
+        $this->assertRegExp($regexp, $code, "Expected code to contain variable '$varName' with value of '$valueString'. Code: $code");
+    }
+
+    private function assertVarNotHasValue($varName, $valueString, $code)
+    {
+        $varNameRe = preg_quote($varName);
+        $valueRe = preg_quote($valueString);
+        $regexp = "/\${$varNameRe}\s*=\s*({$valueRe})\s*;/";
+
+        $this->assertNotRegExp($regexp, $code, "Expected code to NOT contain variable '$varName' with value of '$valueString'. Code: $code");
     }    
 }

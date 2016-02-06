@@ -33,7 +33,7 @@ class Scanner
         T_CLOSE_TAG     =>  true
     );
 
-    public function __construct(Text $text, $position = 0)
+    public function __construct(TokenArray $text, $position = 0)
     {
         $this->text = $text;
         $this->position = $this->skipForward($position);
@@ -102,7 +102,7 @@ class Scanner
     public function findToken($tokenId)
     {
         $pos = $this->position;
-        $tokenId = Text::convertTokenId($tokenId);
+        $tokenId = TokenArray::convertTokenId($tokenId);
 
         if ($this->findTokenPos($tokenId, $pos)) {
             $this->position = $pos;
@@ -114,7 +114,7 @@ class Scanner
 
     public function findAny(array $tokens)
     {   
-        $tokens = array_map('TextScanner\\Text::convertTokenId', $tokens);
+        $tokens = array_map('TextScanner\\TokenArray::convertTokenId', $tokens);
         $pos = $this->position;
 
         if ($this->findAnyTokenPos($tokens, $pos)) {
@@ -174,7 +174,7 @@ class Scanner
     public function findSequence($arg1)
     {
         $args = func_get_args();
-        $args = array_map('Text::convertTokenId', $args);
+        $args = array_map('TokenArray::convertTokenId', $args);
         $pos = $this->position;
 
         while ($this->findTokenPos($arg1, $pos)) {
@@ -189,7 +189,7 @@ class Scanner
 
     public function readTokenId($id)
     {
-        $string = Text::convertTokenId($id);
+        $string = TokenArray::convertTokenId($id);
         $pos = $this->position;
 
         if ($this->consumeToken($pos, $this->getEnd(), $string)) {

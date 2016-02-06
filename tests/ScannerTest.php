@@ -3,19 +3,19 @@
 namespace tests;
 
 use TextScanner\Range;
-use TextScanner\Text;
+use TextScanner\TokenArray;
 
 class ScannerTest extends \PHPUnit_Framework_TestCase
 {
     public function testConvertToken()
     {
-        $this->assertEquals(T_IF, Text::convertTokenId('if'));
-        $this->assertEquals(T_IF, Text::convertTokenId(T_IF));
+        $this->assertEquals(T_IF, TokenArray::convertTokenId('if'));
+        $this->assertEquals(T_IF, TokenArray::convertTokenId(T_IF));
     }
 
     public function testNext()
     {
-        $code = Text::fromCode('<?php /* comment */ echo $x;// end of line comment');
+        $code = TokenArray::fromCode('<?php /* comment */ echo $x;// end of line comment');
         $scan = $code->scan();
 
         $this->assertEquals($scan->getTokenId(), T_OPEN_TAG);
@@ -41,7 +41,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
         foreach ($expressions as $code => $answer) {
 
-            $code = Text::fromCode($code);
+            $code = TokenArray::fromCode($code);
             $scan = $code->scan()->next()->next();
 
             $this->assertEquals($scan->getTokenString(), '$a');
@@ -54,7 +54,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchExpressionInBrackets()
     {
-        $code = Text::fromCode('<?php echo ($a + ($b * 2)) + $e; echo 1 + 2;');
+        $code = TokenArray::fromCode('<?php echo ($a + ($b * 2)) + $e; echo 1 + 2;');
         $scan = $code->scan()->next()->next()->next();
 
         $this->assertEquals($scan->getTokenString(), '$a');
@@ -66,7 +66,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchExpressionWithString()
     {
-        $code = Text::fromCode('<?php echo $a . "test=${b[$c + ($d * 2)]} test={$b[$c + $d]}"; echo 1 + 2;');
+        $code = TokenArray::fromCode('<?php echo $a . "test=${b[$c + ($d * 2)]} test={$b[$c + $d]}"; echo 1 + 2;');
         $scan = $code->scan()->next()->next();
 
         $this->assertEquals($scan->getTokenString(), '$a');
@@ -78,7 +78,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testFind()
     {
-        $code = Text::fromCode('<?php if ($a > $b); if ($c < $d);');
+        $code = TokenArray::fromCode('<?php if ($a > $b); if ($c < $d);');
         $scan = $code->scan();
 
         $first = $scan->findToken(T_IF);
@@ -102,7 +102,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testForContents()
     {
-        $text = Text::fromCode('<?php for ($a = 1; $b < ($c + $d); $e = 1) { "ok"; }');
+        $text = TokenArray::fromCode('<?php for ($a = 1; $b < ($c + $d); $e = 1) { "ok"; }');
         $scan = $text->scan()->next()->next()->next();
         
         $match = $scan->matchForContents();
@@ -116,7 +116,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testFindBadIfs()
     {
-        $text = Text::fromCode(
+        $text = TokenArray::fromCode(
             '<?php echo 1; if ($a < $b) { "ok"; } else echo 1; if ($c < $d); if ($e < $f) echo "No";if ($g < $h) { "ok"; }');
         
         $checker = new \Checker\CurlyBrackets;
@@ -141,7 +141,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testOutputGeneration()
     {
-        $text = Text::fromTokens(array(
+        $text = TokenArray::fromTokens(array(
             '<?php', "\n",                  // 0, 1
             'a', '=', '1', ';', "\n",      // 2 .. 6
             'b', '=', '2', ';', "\n",      // 7 .. 11
@@ -165,7 +165,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
     
     public function testCannotGenerateOutputWithIntersectedRanges()
     {
-        $text = Text::fromTokens(array('<?php', "\n", 'a', '=', '1', ';'));
+        $text = TokenArray::fromTokens(array('<?php', "\n", 'a', '=', '1', ';'));
         $range1 = Range::createIncluding($text, 1, 4);
         $range2 = Range::createIncluding($text, 4, 5);
 
@@ -182,7 +182,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('TextScanner\\TextException');
 
-        $text = Text::fromTokens(array('<?php'));
+        $text = TokenArray::fromTokens(array('<?php'));
         $range1 = Range::createIncluding($text, 0, 100);
 
         $replace = [ [$range1, 'a'] ];
@@ -192,7 +192,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testCountLineAndColumn()
     {
-        $text = Text::fromTokens(array(
+        $text = TokenArray::fromTokens(array(
             '<?', '$a', '=', '1', "\n",  // 0 .. 4
             '$b', '=', '2', ';', "\r\n\r\n\r\n", // 5 ..9
             '$c', '=', '3'    // 10 .. 12
@@ -226,7 +226,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchValue()
     {
-        $numberText = Text::fromCode('<?php 2,1.5,"hello $world";');
+        $numberText = TokenArray::fromCode('<?php 2,1.5,"hello $world";');
 
         $scanner = $numberText->scan();
         $scanner->next();
@@ -251,7 +251,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchValueArray()
     {
-        $arrayText = Text::fromCode('<?php array(1, 2, 3);');
+        $arrayText = TokenArray::fromCode('<?php array(1, 2, 3);');
         $scanner = $arrayText->scan()->next();
 
         $arrayRange = $scanner->matchValue();
@@ -262,7 +262,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchValueHeredoc()
     {
-        $heredocText = Text::fromCode("<?php <<<E\na \$b\nE\n;");
+        $heredocText = TokenArray::fromCode("<?php <<<E\na \$b\nE\n;");
         $scanner = $heredocText->scan()->next();
 
         $heredoc = $scanner->matchValue();
@@ -274,7 +274,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testReadToken()
     {
-        $code = Text::fromCode('<?php 1 - 2');
+        $code = TokenArray::fromCode('<?php 1 - 2');
         $scanner = $code->scan()->next();
 
         $result = $scanner->readTokenString('1');
@@ -288,7 +288,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testReadTokenId()
     {
-        $code = Text::fromCode('<?php $a - $b');
+        $code = TokenArray::fromCode('<?php $a - $b');
         $scanner = $code->scan()->next();
 
         $result = $scanner->readTokenId(T_VARIABLE);

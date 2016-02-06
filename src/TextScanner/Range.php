@@ -8,24 +8,24 @@ class Range
     private $startBefore;
     private $endBefore;
 
-    private function __construct(Text $text, $startBefore, $endBefore)
+    private function __construct(TokenArray $text, $startBefore, $endBefore)
     {
         $this->text = $text;
         $this->startBefore = $startBefore;
         $this->endBefore = $endBefore;
     }
 
-    public static function createEmpty(Text $text, $before = 0)
+    public static function createEmpty(TokenArray $text, $before = 0)
     {
         return new self($text, $before, $before);
     }    
 
-    public static function createIncluding(Text $text, $from, $to)
+    public static function createIncluding(TokenArray $text, $from, $to)
     {
         return new self($text, $from, $to + 1);
     }
 
-    public static function createExcludingEnd(Text $text, $startBefore, $endBefore)
+    public static function createExcludingEnd(TokenArray $text, $startBefore, $endBefore)
     {
         return new self($text, $startBefore, $endBefore);
     }

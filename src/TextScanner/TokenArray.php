@@ -2,7 +2,7 @@
 
 namespace TextScanner;
 
-class Text implements \Countable
+class TokenArray implements \Countable
 {
     private $tokens;
     private $offsetList = array();
