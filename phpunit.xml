@@ -1,8 +1,8 @@
 <phpunit
-    bootstrap="bootstrap.php">
+    bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="TextScanner">
-            <directory>.</directory>
+            <directory>tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

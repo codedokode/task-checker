@@ -71,7 +71,8 @@ class VariableInjectTest extends \PHPUnit_Framework_TestCase
     {
         $varNameRe = preg_quote($varName);
         $valueRe = preg_quote($valueString);
-        $regexp = "/\${$varNameRe}\s*=\s*({$valueRe})\s*;/";
+        // 3 backslashes are needed to pass '\$' into regexp
+        $regexp = "/\\\${$varNameRe}\s*=\s*({$valueRe})\s*;/";
 
         $this->assertRegExp($regexp, $code, "Expected code to contain variable '$varName' with value of '$valueString'. Code: $code");
     }

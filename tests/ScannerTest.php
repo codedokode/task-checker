@@ -116,6 +116,10 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testFindBadIfs()
     {
+        // Этот тест требует наличия неопубликованной библиотеки 
+        // проверки исходного кода
+        $this->markTestIncomplete('This test needs unreleased external library');
+
         $text = TokenArray::fromCode(
             '<?php echo 1; if ($a < $b) { "ok"; } else echo 1; if ($c < $d); if ($e < $f) echo "No";if ($g < $h) { "ok"; }');
         
