@@ -1,17 +1,31 @@
 <?php
 
-namespace Reporter;
+namespace TaskChecker\Reporter;
 
-use Errors\Error;
-use Reporter\Reporter;
-use Reporter\RunScriptStep;
-use Util\String;
+use TaskChecker\Errors\Error;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Step\RunScriptStep;
+use TaskChecker\Step\Step;
+use TaskChecker\Step\StepWithResult;
+use TaskChecker\Util\String;
 
 class ConsolePrinter extends Printer
 {    
     public function printStep(Step $step)
     {
         $this->printStepHeader($step, $step->getComment());
+    }
+
+    public function printStepWithResult(StepWithResult $step)
+    {
+        $this->printStepHeader($step, $step->getComment());
+
+        if ($step->hasResult()) {
+            $result = $step->getResult();
+            $resultString = String::stringify($result);
+
+            $this->printWithPadding($step, "результат: %s", $resultString);
+        }
     }
 
     public function printRunScriptStep(RunScriptStep $step)
@@ -49,7 +63,7 @@ class ConsolePrinter extends Printer
             $statusText = 'успешно';
         } else {
             $statusText = "ошибка {$task->failReason}";
-        }
+        } 
 
         $this->printLine(sprintf("%sвремя: %.3f c, %s", $morePadding, $task->timeTaken, $statusText));
         $this->printLine("");
@@ -60,25 +74,26 @@ class ConsolePrinter extends Printer
         $padding = $this->getStepPadding($step);
         $morePadding = $padding . ' ';
 
-        $result = $step->isSuccess() ? 'ok' : 'fail';
-        $this->printLine("{$padding}[$result] $title");
+        $result = $step->isSuccessful() ? 'ok' : 
+            ($step->isFailed() ? 'fail' : 'running');
+        $this->printWithPadding($step, "[$result] $title");
 
-        if ($step->isSuccess() && $step->hasResult()) {
-            $this->printLine("{$morePadding}результат: {$step->getResult()}");
+        if ($step->isSuccessful() /*  && $step->hasResult() */) {
+            // $this->printLine("{$morePadding}результат: {$step->getResult()}");
         } elseif ($step->isDeepestFailedStep()) {
-            $e = $step->getException();
+            $e = $step->getError();
 
-            if ($e instanceof Error) {
-                $this->printLine("{$morePadding}ошибка: {$e->getErrorText()}");
+            // if ($e instanceof Error) {
+                $this->printWithPadding($step, "  ошибка: {$e->getErrorText()}");
 
                 if ($e->getErrorDescription()) {
                     $text = $this->padText($e->getErrorDescription(), $morePadding);
                     $this->printLine("\nПояснение: $text\n");
                 }
-            } else {
-                $text = $this->padText($e->__toString(), $morePadding);
-                $this->printLine("{$padding}исключение:\n{$text}");
-            }
+            // } else {
+            //     $text = $this->padText($e->__toString(), $morePadding);
+            //     $this->printLine("{$padding}исключение:\n{$text}");
+            // }
         }
     }
     
@@ -117,8 +132,20 @@ class ConsolePrinter extends Printer
         return $parts;
     }
  
-    protected function printLine($line)
+    protected function printLine($text /* ...$args */)
     {
-        echo "$line\n";
+        echo "$text\n";
     }
+
+    protected function printWithPadding(Step $step, $format /* ... $args */)
+    {
+        $args = func_get_args();
+        $args = array_slice($args, 2);
+
+        $format = $this->getStepPadding($step) . $format;
+
+        $text = vsprintf($format, $args);
+        $this->printLine($text);
+    }
+    
 }

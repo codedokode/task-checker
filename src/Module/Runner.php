@@ -1,17 +1,17 @@
 <?php
 
-namespace Module;
+namespace TaskChecker\Module;
 
-use Codebot\ClientInterface;
-use Codebot\RunScriptTask;
-use Errors\ExecuteTaskFailedError;
-use Errors\StderrNotEmptyError;
-use Errors\VariableInjectError;
-use Reporter\Reporter;
-use Reporter\RunScriptStep;
-use Reporter\Step;
-use TextScanner\TokenArray;
-use TextScanner\VariableInjector;
+use TaskChecker\Codebot\ClientInterface;
+use TaskChecker\Codebot\RunScriptTask;
+use TaskChecker\Errors\ExecuteTaskFailedError;
+use TaskChecker\Errors\StderrNotEmptyError;
+use TaskChecker\Errors\VariableInjectError;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Step\RunScriptStep;
+use TaskChecker\Step\Step;
+use TaskChecker\TextScanner\TokenArray;
+use TaskChecker\TextScanner\VariableInjector;
 
 /**
  * Contains methods allowing to run a program with provided data 
@@ -37,14 +37,16 @@ class Runner extends BaseModule
     private $codebotClient;
 
     /**
-     * @var Reporter 
+     * @var Report 
      */
     private $reporter;
+
+    private $taskQueue = [];
 
     public function __construct(
         ClientInterface $codebotClient, 
         VariableInjector $injector,
-        Reporter $reporter,
+        Report $reporter,
         $code)
     {
         $this->code = $code;
@@ -57,6 +59,13 @@ class Runner extends BaseModule
     {
         $this->onExecuteHandlers[] = $handler;
     }
+
+    public function runScript(callable $verify)
+    {
+        // hack
+        $this->runWithVariables([[]], $verify);
+    }
+    
 
     /**
      * @param array $data Contains input values and expected output values. Input

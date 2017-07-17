@@ -1,7 +1,9 @@
 <phpunit
-    bootstrap="tests/bootstrap.php">
+    bootstrap="tests/bootstrap.php"
+    backupGlobals="false">
+    <!-- backupGlobals causes 'Serialization of Closure' error in phpunit5.7 -->
     <testsuites>
-        <testsuite name="TextScanner">
+        <testsuite name="main">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>

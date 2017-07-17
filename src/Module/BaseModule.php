@@ -1,18 +1,8 @@
 <?php
 
-namespace Module;
-
-use Reporter\Reporter;
+namespace TaskChecker\Module;
 
 abstract class BaseModule
 {
-    // /**
-    //  * @var Reporter
-    //  */
-    // protected $reporter;
 
-    // public function setReporter(Reporter $reporter = null)
-    // {
-    //     $this->reporter = $reporter;
-    // }  
 }

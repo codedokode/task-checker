@@ -1,26 +1,29 @@
 <?php
 
-namespace Reporter;
+namespace TaskChecker\Reporter;
 
-use Reporter\Reporter;
-use Reporter\Step;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Step\RunScriptStep;
+use TaskChecker\Step\Step;
+use TaskChecker\Step\StepWithResult;
 
 abstract class Printer
 {
     abstract public function printStep(Step $step);
+    abstract public function printStepWithResult(StepWithResult $step);
     abstract public function printRunScriptStep(RunScriptStep $step);
 
-    public function printHeader(Reporter $reporter)
+    public function printHeader(Report $reporter)
     {
         
     }
     
-    public function printFooter(Reporter $reporter)
+    public function printFooter(Report $reporter)
     {
         
     }
 
-    public function printReport(Reporter $reporter)
+    public function printReport(Report $reporter)
     {
         $this->printHeader($reporter);
         $this->printSteps($reporter->getSteps());
@@ -40,12 +43,16 @@ abstract class Printer
     protected function printStepForClass(Step $step)
     {
         switch (get_class($step)) {
-            case 'Reporter\\Step':
+            case Step::class:
                 $this->printStep($step);
                 break;
 
-            case 'Reporter\\RunScriptStep':
+            case RunScriptStep::class:
                 $this->printRunScriptStep($step);
+                break;
+
+            case StepWithResult::class:
+                $this->printStepWithResult($step);
                 break;
 
             default:

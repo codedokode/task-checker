@@ -1,17 +1,18 @@
 <?php
 
-namespace Module;
+namespace TaskChecker\Module;
 
-use Errors\ReaderNotOneMatchError;
-use Reporter\Reporter;
-use Util\String;
-use textReader\Reader as TextReader_Reader;
+use TaskChecker\Errors\ReaderNotOneMatchError;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Step\StepWithResult;
+use TaskChecker\TextReader\Reader as TextReader_Reader;
+use TaskChecker\Util\String;
 
 class Reader extends BaseModule
 {
     private $reporter;
 
-    function __construct(Reporter $reporter) 
+    function __construct(Report $reporter) 
     {
         $this->reporter = $reporter;
     }
@@ -32,8 +33,11 @@ class Reader extends BaseModule
         $varName= $varNames[0];
         $result = null;
 
-        $step = $this->reporter->check(
-            "ищем в выводе программы фразу '{$reader->getPatternText()}'", 
+        $step = new StepWithResult(
+            "ищем в выводе программы фразу '{$reader->getPatternText()}'");
+
+        $this->reporter->executeStep(
+            $step, 
             function ($step) use($output, $reader, $varName, &$result) {
                 $matches = $reader->matchAll($output);
 
@@ -42,9 +46,9 @@ class Reader extends BaseModule
                 }
 
                 $result = $matches[0][$varName];
+                $step->setResult(sprintf('%s = %s', $varName, $result));
         });
 
-        $step->setResult(sprintf('%s = %s', $varName, $result));
         return $result;
     }
 }

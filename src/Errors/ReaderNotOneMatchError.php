@@ -1,8 +1,8 @@
 <?php
 
-namespace Errors;
+namespace TaskChecker\Errors;
 
-class ReaderNotOneMatchError extends Error
+class ReaderNotOneMatchError extends BaseTestError
 {
     function __construct($matchCount) 
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Codebot;
+namespace TaskChecker\Codebot;
 
 class RunScriptTask
 {

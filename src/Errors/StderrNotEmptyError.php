@@ -1,8 +1,8 @@
 <?php
 
-namespace Errors;
+namespace TaskChecker\Errors;
 
-class StderrNotEmptyError extends Error
+class StderrNotEmptyError extends BaseTestError
 {
     private $stderr;
 

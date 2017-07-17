@@ -1,6 +1,6 @@
 <?php
 
-namespace Module;
+namespace TaskChecker\Module;
 
 class Util extends BaseModule
 {

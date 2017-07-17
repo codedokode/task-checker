@@ -1,6 +1,6 @@
 <?php
 
-namespace Util;
+namespace TaskChecker\Util;
 
 class String
 {

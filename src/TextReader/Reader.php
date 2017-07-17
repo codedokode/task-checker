@@ -1,8 +1,8 @@
 <?php
 
-namespace TextReader;
+namespace TaskChecker\TextReader;
 
-use Util\ArrayUtil;
+use TaskChecker\Util\ArrayUtil;
 
 class Reader
 {

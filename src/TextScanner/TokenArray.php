@@ -1,6 +1,6 @@
 <?php
 
-namespace TextScanner;
+namespace TaskChecker\TextScanner;
 
 class TokenArray implements \Countable
 {

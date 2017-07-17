@@ -1,8 +1,8 @@
 <?php
 
-namespace Errors;
+namespace TaskChecker\Errors;
 
-class AssertionFailedError extends Error
+class AssertionFailedError extends BaseTestError
 {
     public function getErrorText()
     {

@@ -1,12 +1,13 @@
 <?php
 
-use Codebot\EvalClient;
-use Errors\Error;
-use Reporter\ConsolePrinter;
-use Reporter\Reporter;
-use Test\ScenarioTest;
+use TaskChecker\Codebot\EvalClient;
+use TaskChecker\Errors\BaseTestError;
+use TaskChecker\ModuleFactory;
+use TaskChecker\Reporter\ConsolePrinter;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Test\ScenarioTest;
 
-require_once __DIR__ . '/_bootstrap.php';
+require_once __DIR__ . '/../src/bootstrap.php';
 
 $codebot = new EvalClient();
 $moduleFactory = new ModuleFactory($codebot);
@@ -23,16 +24,16 @@ if (!file_exists($codeFile)) {
 }
 
 $code = file_get_contents($codeFile);
-$reporter = new Reporter;
-
 $test = new ScenarioTest($testFile, $moduleFactory);
 
-try {
-    $test->run($reporter, $code);
-} catch (Error $e) {
-    echo "Error: {$e->getErrorText()}\n\n";
+$report = $test->run($code);
+
+if ($report->isFailed()) {
+    printf("Failed: %s\n\n", $report->getLastError()->getErrorText());
+} else {
+    printf("Success\n\n");
 }
 
 $consolePrinter = new ConsolePrinter;
-$consolePrinter->printReport($reporter);
+$consolePrinter->printReport($report);
 

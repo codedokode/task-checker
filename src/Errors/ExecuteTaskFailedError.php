@@ -1,8 +1,8 @@
 <?php
 
-namespace Errors;
+namespace TaskChecker\Errors;
 
-class ExecuteTaskFailedError extends Error
+class ExecuteTaskFailedError extends BaseTestError
 {
     private $task;
 

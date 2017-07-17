@@ -1,12 +1,16 @@
 {
+    "require": {
+        "silex/silex": "~2.0",
+        "twig/twig": "^1.34"
+    },
     "autoload": { 
         "psr-4": {
-            "": "src/"
+            "TaskChecker\\": "src/"
         }  
     },
     "autoload-dev": {
         "psr-4": {
-           "tests\\": "tests/"
+           "Tests\\TaskChecker\\": "tests/"
         }
     }
 }

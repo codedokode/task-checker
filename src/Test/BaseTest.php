@@ -1,44 +1,56 @@
 <?php
 
-namespace Test;
+namespace TaskChecker\Test;
 
-use Reporter\Reporter;
+use TaskChecker\Errors\BaseTestError;
+use TaskChecker\ModuleFactory;
+use TaskChecker\Reporter\Report;
 
+/**
+ * Представляет тест, который можно запустить.
+ */
 abstract class BaseTest
 {
     private $modules = [];
 
-    private $reporter;
+    private $report;
 
     private $solutionCode;
 
     private $moduleFactory;
 
-    function __construct(\ModuleFactory $moduleFactory) 
+    function __construct(ModuleFactory $moduleFactory) 
     {
         $this->moduleFactory = $moduleFactory;
     }
 
     abstract protected function runTest();    
 
-    public function run(Reporter $reporter, $solutionCode)
+    public function run($solutionCode, Report $report = null)
     {
-        $this->setReporter($reporter);
+        if (!$report) {
+            $report = new Report;
+        }
+
+        $this->setReport($report);
         $this->solutionCode = $solutionCode;
-        $this->runTest();
-        $this->setReporter(null);
+
+        try {
+            $this->runTest();
+        } catch (BaseTestError $e) {
+            // ignore
+        }
+
+        $this->setReport(null);
         $this->solutionCode = null;
+
+        return $report;
     }
 
-    protected function setReporter(Reporter $reporter = null)
+    protected function setReport(Report $report = null)
     {
-        $this->reporter = $reporter;
-
-        foreach ($this->modules as $module) {
-            if (method_exists($module, 'setReporter')) {
-                $module->setReporter($reporter);
-            }
-        }   
+        $this->report = $report;
+        $this->modules = [];
     }
 
     public function __isset($name)
@@ -56,7 +68,7 @@ abstract class BaseTest
             return $this->modules[$name];
         }
 
-        $this->modules[$name] = $this->moduleFactory->getModule($name, $this, $this->reporter);
+        $this->modules[$name] = $this->moduleFactory->getModule($name, $this, $this->report);
         return $this->modules[$name];
 
         // throw new \Exception("No module with name '$name' found");

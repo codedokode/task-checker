@@ -1,10 +1,10 @@
 <?php
 
-namespace Errors;
+namespace TaskChecker\Errors;
 
-use TextScanner\VariableInjectException;
+use TaskChecker\TextScanner\VariableInjectException;
 
-class VariableInjectError extends Error
+class VariableInjectError extends BaseTestError
 {
     private $errorCode;
     private $injectError;

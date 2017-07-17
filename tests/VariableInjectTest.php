@@ -1,9 +1,10 @@
 <?php
 
-namespace tests;
+namespace Tests\TaskChecker;
 
-use TextScanner\TokenArray;
-use TextScanner\VariableInjector;
+use TaskChecker\TextScanner\TokenArray;
+use TaskChecker\TextScanner\VariableInjectException;
+use TaskChecker\TextScanner\VariableInjector;
 
 class VariableInjectTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,7 +33,7 @@ class VariableInjectTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEmpty($output);
         $this->assertCount(1, $errors);
-        $this->assertInstanceOf('TextScanner\\VariableInjectException', $errors[0]);
+        $this->assertInstanceOf(VariableInjectException::class, $errors[0]);
         $this->assertEquals('a', $errors[0]->getVarName());
     }
     

@@ -1,8 +1,8 @@
 <?php
 
-namespace Reporter;
+namespace TaskChecker\Step;
 
-use Codebot\RunScriptTask;
+use TaskChecker\Codebot\RunScriptTask;
 
 class RunScriptStep extends Step
 {

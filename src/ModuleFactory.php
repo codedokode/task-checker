@@ -1,9 +1,11 @@
 <?php
 
-use Codebot\ClientInterface;
-use Reporter\Reporter;
-use Test\BaseTest;
-use TextScanner\VariableInjector;
+namespace TaskChecker;
+
+use TaskChecker\Codebot\ClientInterface;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Test\BaseTest;
+use TaskChecker\TextScanner\VariableInjector;
 
 class ModuleFactory
 {
@@ -16,7 +18,7 @@ class ModuleFactory
         $this->injector = new VariableInjector;
     }
 
-    public function getModule($name, BaseTest $test, Reporter $reporter)
+    public function getModule($name, BaseTest $test, Report $reporter)
     {
         $method = 'getModule' . ucfirst($name);
         return $this->$method($test, $reporter);
@@ -28,7 +30,7 @@ class ModuleFactory
         return method_exists($this, $method);
     }
     
-    public function getModuleRunner(BaseTest $test, Reporter $reporter)
+    public function getModuleRunner(BaseTest $test, Report $reporter)
     {
         return new Module\Runner(
             $this->codebotClient, 
@@ -38,7 +40,7 @@ class ModuleFactory
         );
     }
     
-    public function getModuleReader(BaseTest $test, Reporter $reporter)
+    public function getModuleReader(BaseTest $test, Report $reporter)
     {
         return new Module\Reader(
             $reporter
@@ -50,7 +52,7 @@ class ModuleFactory
         return new Module\Util;
     }
 
-    public function getModuleAssert(BaseTest $test, Reporter $reporter)
+    public function getModuleAssert(BaseTest $test, Report $reporter)
     {
         return new Module\Assert($reporter);
     }

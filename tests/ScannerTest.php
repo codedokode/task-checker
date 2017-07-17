@@ -1,9 +1,10 @@
 <?php
 
-namespace tests;
+namespace Tests\TaskChecker;
 
-use TextScanner\Range;
-use TextScanner\TokenArray;
+use TaskChecker\TextScanner\Range;
+use TaskChecker\TextScanner\TextException;
+use TaskChecker\TextScanner\TokenArray;
 
 class ScannerTest extends \PHPUnit_Framework_TestCase
 {
@@ -178,13 +179,13 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
             [$range2, 'y']
         ];
 
-        $this->setExpectedException('TextScanner\\TextException');
+        $this->setExpectedException(TextException::class);
         $text->generateOutput($replace);
     }
 
     public function testCannotGenerateOutputWithInvalidRange()
     {
-        $this->setExpectedException('TextScanner\\TextException');
+        $this->setExpectedException(TextException::class);
 
         $text = TokenArray::fromTokens(array('<?php'));
         $range1 = Range::createIncluding($text, 0, 100);

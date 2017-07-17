@@ -1,8 +1,8 @@
 <?php
 
-namespace Errors;
+namespace TaskChecker\Errors;
 
-abstract class Error extends \Exception
+abstract class BaseTestError extends \Exception
 {
     abstract public function getErrortext();
 

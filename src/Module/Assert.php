@@ -1,19 +1,19 @@
 <?php
 
-namespace Module;
+namespace TaskChecker\Module;
 
-use Errors\AssertionFailedError;
-use Reporter\Reporter;
-use Reporter\Step;
-use Util\String;
+use TaskChecker\Errors\AssertionFailedError;
+use TaskChecker\Reporter\Report;
+use TaskChecker\Step\Step;
+use TaskChecker\Util\String;
 
 class Assert extends BaseModule
 {
-    private $reporter;
+    private $report;
 
-    public function __construct(Reporter $reporter)
+    public function __construct(Report $report)
     {
-        $this->reporter = $reporter;
+        $this->report = $report;
     }
     
     public function isNumber($value)
@@ -30,7 +30,7 @@ class Assert extends BaseModule
         $precisionText = $this->formatPrecision($precision, $allowedError);
 
         $this->isTrue(
-            sprintf("проверим что %s равняется %s %s", $actual, $expected, $precisionText),
+            sprintf("проверим, что %s равняется %s %s", $actual, $expected, $precisionText),
             abs($actual - $expected) <= $allowedError
         );
     }
@@ -53,8 +53,8 @@ class Assert extends BaseModule
         });
     }    
 
-    public function assertThat($message, callable $check)
+    private function assertThat($message, callable $check)
     {
-        return $this->reporter->check($message, $check);
+        return $this->report->check($message, $check);
     }    
 }

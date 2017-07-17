@@ -1,8 +1,8 @@
 <?php
 
-namespace Test;
+namespace TaskChecker\Test;
 
-use ModuleFactory;
+use TaskChecker\ModuleFactory;
 
 /**
  * Test with code storead in a script file
@@ -13,6 +13,10 @@ class ScenarioTest extends BaseTest
 
     public function __construct($scriptName, ModuleFactory $moduleFactory)
     {
+        if (!file_exists($scriptName)) {
+            throw new \InvalidArgumentException("File does not exist: $scriptName");
+        }
+
         parent::__construct($moduleFactory);
         $this->scriptName = $scriptName;
     }
