@@ -1,5 +1,7 @@
 # Task Checker
 
+[![Build status](https://travis-ci.org/codedokode/task-checker.svg?branch=master)](https://travis-ci.org/codedokode/task-checker)
+
 Библиотека для написания тестов для проверки решений задач на PHP. Пока на этапе проектирования и демо-версии. 
 
 Пример теста можно увидеть в [cli/run-test/scenario.php](./cli/run-test/scenario.php), в той же папке находятся примеры программ, которые проверяет этот тест.
