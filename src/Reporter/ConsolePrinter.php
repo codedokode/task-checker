@@ -7,7 +7,7 @@ use TaskChecker\Reporter\Report;
 use TaskChecker\Step\RunScriptStep;
 use TaskChecker\Step\Step;
 use TaskChecker\Step\StepWithResult;
-use TaskChecker\Util\String;
+use TaskChecker\Util\StringUtil;
 
 class ConsolePrinter extends Printer
 {    
@@ -22,7 +22,7 @@ class ConsolePrinter extends Printer
 
         if ($step->hasResult()) {
             $result = $step->getResult();
-            $resultString = String::stringify($result);
+            $resultString = StringUtil::stringify($result);
 
             $this->printWithPadding($step, "результат: %s", $resultString);
         }
@@ -33,7 +33,7 @@ class ConsolePrinter extends Printer
         $task = $step->getTask();
         $title = sprintf(
             "запуск программы с переменными %s", 
-            String::stringify($step->getInputVariables())
+            StringUtil::stringify($step->getInputVariables())
         );
 
         $this->printStepHeader($step, $title);

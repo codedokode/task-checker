@@ -5,7 +5,7 @@ namespace TaskChecker\Module;
 use TaskChecker\Errors\AssertionFailedError;
 use TaskChecker\Reporter\Report;
 use TaskChecker\Step\Step;
-use TaskChecker\Util\String;
+use TaskChecker\Util\StringUtil;
 
 class Assert extends BaseModule
 {
@@ -19,7 +19,7 @@ class Assert extends BaseModule
     public function isNumber($value)
     {
         $this->isTrue(
-            sprintf("проверим, что %s это число", String::stringify($value)),
+            sprintf("проверим, что %s это число", StringUtil::stringify($value)),
             is_numeric($value)
         );
     }

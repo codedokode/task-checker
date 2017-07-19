@@ -6,7 +6,6 @@ use TaskChecker\Errors\ReaderNotOneMatchError;
 use TaskChecker\Reporter\Report;
 use TaskChecker\Step\StepWithResult;
 use TaskChecker\TextReader\Reader as TextReader_Reader;
-use TaskChecker\Util\String;
 
 class Reader extends BaseModule
 {

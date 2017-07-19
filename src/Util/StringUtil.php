@@ -2,7 +2,7 @@
 
 namespace TaskChecker\Util;
 
-class String
+class StringUtil
 {
     public static function stringify($value)
     {
