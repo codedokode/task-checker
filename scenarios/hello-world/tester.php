@@ -1,7 +1,7 @@
 <?php 
 
 // Проверяем, что что-нибудь выводится
-$this->runner->runScript(function ($output) {    
+$this->runner->queueRunning([], function ($output) {    
 
     $output = trim($output);
 

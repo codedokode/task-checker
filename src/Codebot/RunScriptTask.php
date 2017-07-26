@@ -44,4 +44,9 @@ class RunScriptTask
         return $this->status == self::STATUS_EXECUTED;
     }
     
+    public function isExecuted()
+    {
+        return $this->status != self::STATUS_READY;
+    }
+    
 }

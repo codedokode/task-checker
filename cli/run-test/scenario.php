@@ -9,7 +9,7 @@ $csv = "
 
 $data = $this->util->fromCsv($csv);
 
-$this->runner->runWithVariables($data, function ($output, array $row) {
+$this->runner->queueRunningForArray($data, function ($output, array $row) {
     $rubles = $this->reader->readOne($output, "можно обменять на {x}");
     $this->assert->isNumber($rubles);
     $this->assert->isEqualApproximately($row['rubles'], $rubles, 0.02);

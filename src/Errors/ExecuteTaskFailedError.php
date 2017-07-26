@@ -2,6 +2,8 @@
 
 namespace TaskChecker\Errors;
 
+use TaskChecker\Codebot\RunScriptTask;
+
 class ExecuteTaskFailedError extends BaseTestError
 {
     private $task;

@@ -2,6 +2,8 @@
 
 namespace TaskChecker\Promise;
 
+use React\Promise\PromisorInterface;
+
 class UnfailingDeferred implements PromisorInterface
 {
     private $promise;

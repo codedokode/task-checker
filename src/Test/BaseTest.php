@@ -37,8 +37,12 @@ abstract class BaseTest
 
         try {
             $this->runTest();
+
+            // Run queued tasks
+            $this->runner->runQueuedTasks($solutionCode);
+
         } catch (BaseTestError $e) {
-            // ignore
+            // ignore ? 
         }
 
         $this->setReport(null);

@@ -3,6 +3,8 @@
 namespace TaskChecker\Promise;
 
 use React\Promise\PromiseInterface;
+use React\Promise\_checkTypehint;
+use React\Promise;
 
 /**
  * Промис, который при любом реджекте выкидывает исключение - 
@@ -25,8 +27,12 @@ class UnfailingPromise implements PromiseInterface
         $this->call($resolver);
     }
 
-    public function then(callable $onFulfilled = null, callable $onRejected = null)
+    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
     {
+        if ($onProgress) {
+            throw new \InvalidArgumentException("Progress handler is not supported");
+        }
+
         if (null !== $this->result) {
             return $this->result->then($onFulfilled, $onRejected);
         }
@@ -64,11 +70,11 @@ class UnfailingPromise implements PromiseInterface
     public function always(callable $onFulfilledOrRejected)
     {
         return $this->then(function ($value) use ($onFulfilledOrRejected) {
-            return resolve($onFulfilledOrRejected())->then(function () use ($value) {
+            return Promise\resolve($onFulfilledOrRejected())->then(function () use ($value) {
                 return $value;
             });
         }, function ($reason) use ($onFulfilledOrRejected) {
-            return resolve($onFulfilledOrRejected())->then(function () use ($reason) {
+            return Promise\resolve($onFulfilledOrRejected())->then(function () use ($reason) {
                 return new RejectedPromise($reason);
             });
         });
@@ -92,7 +98,7 @@ class UnfailingPromise implements PromiseInterface
             return;
         }
 
-        $this->settle(resolve($value));
+        $this->settle(Promise\resolve($value));
     }
 
     private function reject($reason)

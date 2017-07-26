@@ -11,6 +11,8 @@ class EvalClient implements ClientInterface
     private $timeLimit = INF;
     private $memoryLimit = INF;
 
+    private $inErrorHandler = false;
+
     public function getOutputLimit()
     {
         return $this->outputLimit;
@@ -58,6 +60,12 @@ class EvalClient implements ClientInterface
             $task->exitCode = 0;
 
         } catch (\Exception $e) {
+
+            // Do not catch errors occured inside error handler
+            if ($this->inErrorHandler) {
+                throw $e;
+            }
+
             $end = microtime(true);
             $task->exitCode = 255;
         }
@@ -105,10 +113,19 @@ class EvalClient implements ClientInterface
     {
         $script = '?>' . $source;
 
-        set_error_handler(function ($errno, $errstr, $errfile, $errline) use (&$stderr){
+        $this->inErrorHandler = false;
+
+        set_error_handler(function ($errno, $errstr, $file, $line) use (&$stderr) {
+
+            if ($this->inErrorHandler) {
+                throw new \ErrorException($errno, $errstr, $file, $line);
+            }
+
+            $this->inErrorHandler = true;
             $type = $this->getErrorType($errno);
-            $messsage = "$type: $errstr in file $file, line $line\n";
+            $message = "$type: $errstr in file $file, line $line\n";
             $stderr .= $message;
+            $this->inErrorHandler = false;
         });
 
         ob_start();
@@ -122,5 +139,28 @@ class EvalClient implements ClientInterface
             $stdout = ob_get_clean();
             throw $e;
         } 
-    }       
+    }  
+
+    private function getErrorType($type)
+    {
+        $types = [
+            E_ERROR             => 'PHP Error',
+            E_WARNING           => 'PHP Warning',
+            E_PARSE             => 'PHP Parse Error',
+            E_NOTICE            => 'PHP Notice',
+            E_CORE_ERROR        => 'PHP Core Error',
+            E_CORE_WARNING      => 'PHP Core Warning',
+            E_COMPILE_ERROR     => 'PHP Compile Error',
+            E_COMPILE_WARNING   => 'PHP Compile Warning',
+            E_USER_ERROR        => 'E_USER_ERROR',
+            E_USER_WARNING      => 'E_USER_WARNING',
+            E_USER_NOTICE       => 'E_USER_NOTICE',
+            E_STRICT            => 'PHP Strict Mode',
+            E_RECOVERABLE_ERROR => 'PHP Recoverable Error',
+            E_DEPRECATED        => 'PHP Deprecated',
+            E_USER_DEPRECATED   => 'E_USER_DEPRECATED'
+        ];
+
+        return array_key_exists($type, $types) ? $types[$type] : "Error_type_{$type}";
+    }         
 }
