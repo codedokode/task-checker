@@ -16,7 +16,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
         $this->util = new Util();
     }
 
-    public function provideCsvWithExpectedResult()
+    public function provideCorrectCsvExample()
     {
         return [
             [
@@ -33,8 +33,26 @@ class UtilTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    public function provideIncorrectCsvExamples()
+    {
+        return [
+            ["
+                a,b,c
+            "],
+            ["
+                a,b,c
+                1,2
+            "],
+            ["
+                a,b,c 
+                1,2,3,4
+            "]
+        ];
+    }
+    
+
     /**
-     * @dataProvider provideCsvWithExpectedResult
+     * @dataProvider provideCorrectCsvExample
      */
     public function testFromCsv($csvString, array $expectedResult)
     {
@@ -42,4 +60,14 @@ class UtilTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResult, $result);
     }
+
+    /**
+     * @dataProvider provideIncorrectCsvExamples
+     */
+    public function testFromCsvFailsWithIncorrectData($csvString)
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->util->fromCsv($csvString);
+    }
+    
 }

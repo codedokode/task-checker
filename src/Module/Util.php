@@ -22,6 +22,11 @@ class Util extends BaseModule
         $lines = array_map("trim", $lines);
         $lines = array_filter($lines, function ($line) { return $line !== ''; });
 
+        if (count($lines) < 2) {
+            throw new \InvalidArgumentException(
+                "Input data must contain at least 2 lines");
+        }
+
         $data = array_map('str_getcsv', $lines);
         foreach ($data as $key => $row) {
             $data[$key] = array_map('trim', $row);
@@ -32,7 +37,7 @@ class Util extends BaseModule
         $result = [];
         foreach ($data as $i => $row) {
             if (count($row) != count($headers)) {
-                throw new \Exception(sprintf(
+                throw new \InvalidArgumentException(sprintf(
                     "Invalid value count at row %d, %d headers and %d cells",
                     $i + 1,
                     count($headers),
@@ -40,9 +45,9 @@ class Util extends BaseModule
                 ));
             }
 
-            foreach ($row as &$value) {
+            foreach ($row as $key => $value) {
                 if (is_numeric($value)) {
-                    $value = floatval($value);
+                    $row[$key] = floatval($value);
                 }
             }
 
