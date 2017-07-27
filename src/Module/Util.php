@@ -23,8 +23,8 @@ class Util extends BaseModule
         $lines = array_filter($lines, function ($line) { return $line !== ''; });
 
         $data = array_map('str_getcsv', $lines);
-        foreach ($data as &$row) {
-            $row = array_map('trim', $row);
+        foreach ($data as $key => $row) {
+            $data[$key] = array_map('trim', $row);
         }
 
         $headers = array_shift($data);
