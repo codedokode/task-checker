@@ -9,6 +9,11 @@ class TestHelper
         return $GLOBALS['app'];
     }
 
+    public static function getApplication()
+    {
+        return $GLOBALS['app'];
+    }
+
     public static function getService($name)
     {
         $container = self::getContainer();

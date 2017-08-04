@@ -44,15 +44,15 @@ abstract class Printer
     {
         switch (get_class($step)) {
             case Step::class:
-                $this->printStep($step);
+                return $this->printStep($step);
                 break;
 
             case RunScriptStep::class:
-                $this->printRunScriptStep($step);
+                return $this->printRunScriptStep($step);
                 break;
 
             case StepWithResult::class:
-                $this->printStepWithResult($step);
+                return $this->printStepWithResult($step);
                 break;
 
             default:

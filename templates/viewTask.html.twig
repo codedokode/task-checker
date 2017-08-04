@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% block styles %}
+<link rel="stylesheet" href="/css/viewTask.css">
+<link rel="stylesheet" href="/css/reportPrinter.css">
+{% endblock %}
+
+{% block content %}
+    <h1>Задача: {{ task.getTitle() }}</h1>
+
+    <p>Описание: {{ task.getDescription() }}</p>
+
+    {% if wasChecked %}
+        <h2>
+            Результат проверки: 
+            {% if report.isSuccessful() %}правильно
+            {% elseif report.isFailed() %}неправильно
+            {% endif %}
+        </h2>
+
+        {{ twigPrinter.printReport(report) | raw }}
+    {% endif %}
+
+    <p>Введите код вашей программы в форму ниже и нажмите кнопку «Отправить».</p>
+
+    {% if error %}
+        <p class="form-error">Ошибка: {{ error }}</p>
+    {% endif %}
+
+    <form action="" method="POST" data-test-id="taskForm">
+        <input type="hidden" name="csrf_token" value="{{ csrfToken }}">
+
+        <div class="form-row-wide">
+            <label>Код программы:</label>
+            <textarea name="source" cols="30" rows="10">{{ source }}</textarea>
+        </div>
+        <div class="form-row">
+            <button type="submit">Отправить на проверку</button>
+        </div>
+    </form>
+
+{% endblock %}

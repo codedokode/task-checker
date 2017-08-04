@@ -3,6 +3,7 @@
 namespace TaskChecker\Step;
 
 use TaskChecker\Codebot\RunScriptTask;
+use TaskChecker\Util\StringUtil;
 
 class RunScriptStep extends Step
 {
@@ -11,7 +12,16 @@ class RunScriptStep extends Step
 
     public function __construct(RunScriptTask $task, array $inputVariables)
     {
-        parent::__construct("запуск программы");
+        if (count($inputVariables) > 0) {
+            $title = sprintf(
+                "запуск программы с подстановкой переменных %s", 
+                StringUtil::stringify($inputVariables)
+            );
+        } else {
+            $title = "запуск программы";
+        }
+
+        parent::__construct($title);
         $this->task = $task;
         $this->inputVariables = $inputVariables;
     }    

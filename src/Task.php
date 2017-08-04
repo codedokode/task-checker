@@ -22,6 +22,11 @@ class Task
     {
         return $this->id;
     }
+
+    public function getSlug()
+    {
+        return $this->id;
+    }
     
     public function getTitle()
     {

@@ -1,0 +1,109 @@
+{# 
+    Prints Report contents. Should not be called directly, 
+    instead call TwigPrinter->printReport(...);
+#}
+{% import _self as self %}
+<ul class="report__steps">
+    {% for step in report.getSteps() %}
+        {{ self.printOneStep(step, twigPrinter) }}
+    {% endfor %}
+</ul>
+
+{% macro printOneStep(step, twigPrinter) %}
+    {% import _self as self %}
+    {# Call different macros depending on a step type #}
+    <li>
+        {% set macroName = twigPrinter.getMacroNameForStep(step) %}
+        {{ attribute(self, macroName, [step, twigPrinter]) }}
+
+        {% if step.hasChildren() %}
+            <ul class="report__steps">
+                {% for child in step.getChildren() %}
+                    {{ self.printOneStep(child, twigPrinter) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro stepHeader(step, twigPrinter) %}
+<h3>
+    {% if step.isSuccessful() %}<span class="report__ok-icon">&#10003;</span>{% endif %}
+    {% if step.isFailed() %}<span class="report__error-icon">&#10007;</span>{% endif %}
+    {{ step.getComment() }}
+</h3>
+{% endmacro %}
+
+{% macro stepStatus(step, twigPrinter, resultString) %}
+<div class="report__step-status">
+    {% if step.isSuccessful() %}Успешно{% endif %}
+    {% if step.isDeepestFailedStep() %}
+        {% set error = step.getError() %}
+        Ошибка: {{ error.getErrorText() }}
+
+        {% if error.getErrorDescription() %}
+            <div class="report__error-description">
+                Пояснение: {{ error.getErrorDescription() }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {% if resultString != null %}
+        , Результат: {{ resultString }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{# 
+    Macros for different step types 
+#}
+{% macro itemStep(step, twigPrinter) %}
+    {% import _self as self %}
+    {{ self.stepHeader(step, twigPrinter) }}
+    {{ self.stepStatus(step, twigPrinter) }}
+{% endmacro %}
+
+{% macro itemStepWithResult(step, twigPrinter) %}
+    {% import _self as self %}
+    
+    {% if step.hasResult() %}
+        {% set stepResult = twigPrinter.getStepResultAsString(step.getResult()) %}
+    {% else %}
+        {% set stepResult = null %}
+    {% endif %}
+
+    {{ self.stepHeader(step, twigPrinter) }}
+    {{ self.stepStatus(step, twigPrinter, stepResult) }}
+{% endmacro %}
+
+{% macro itemRunScriptStep(step, twigPrinter) %}
+    {% import _self as self %}
+
+    {{ self.stepHeader(step, twigPrinter) }}
+    {{ self.stepStatus(step, twigPrinter) }}
+
+    {% set task = step.getTask() %}
+
+    <div class="report__step-status">
+        {% if task.isSuccess() %}
+            Программа выполнена успешно, 
+        {% else %}
+            Не удалось выполнить программу: {{ task.failReason }},
+        {% endif %}
+        код выхода {{ task.exitCode }}, 
+        время выполнения {{ (task.timeTaken * 1000) | number_format(0, ',', ' ') }} мс., 
+        потребление памяти {{ (task.memoryTaken / 1024 / 1024) | number_format(1, ',', ' ') }} Мб.
+    </div>
+
+    <h4>Текст запущенной программы:</h4>
+    <pre class="report-step-run__text"><code>{{ task.source }}</code></pre>
+
+    <h4>Результат выполнения программы (stdout):</h4>
+    <pre class="report-step-run__text"><samp>{{ task.stdout }}</samp></pre>
+
+    {% if task.stderr != '' %}
+        <h4>Ошибки и предупреждения (stderr):</h4>
+        <pre class="report-step-run__text"><samp>{{ task.stderr }}</samp></pre>
+    {% endif %}
+
+{% endmacro %}

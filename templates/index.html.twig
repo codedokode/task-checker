@@ -1,0 +1,18 @@
+{% extends 'layout.html.twig' %}
+
+{% block styles %}
+<link rel="stylesheet" href="/css/index.css">
+{% endblock %}
+
+{% block content %}
+<h1>Проверка задач</h1>
+
+<p>Здесь вы можете проверить решение задачи на PHP. Для 
+этого выберите интересующую вас задачу из списка:</p>
+
+<ul>
+    {% for task in gTasks %}
+        <li><a href="{{ gUrlGenerator.getViewTaskUrl(task) }}">{{ task.getTitle() }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

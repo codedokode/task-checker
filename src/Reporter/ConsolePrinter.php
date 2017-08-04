@@ -31,10 +31,11 @@ class ConsolePrinter extends Printer
     public function printRunScriptStep(RunScriptStep $step)
     {
         $task = $step->getTask();
-        $title = sprintf(
-            "запуск программы с переменными %s", 
-            StringUtil::stringify($step->getInputVariables())
-        );
+        $title = $step->getComment();
+        // $title = sprintf(
+        //     "запуск программы с переменными %s", 
+        //     StringUtil::stringify($step->getInputVariables())
+        // );
 
         $this->printStepHeader($step, $title);
 
