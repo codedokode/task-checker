@@ -25,7 +25,7 @@ php cli/run-test.php cli/run-test/scenario.php cli/run-test/program1.php
 У приложения имеется веб-интерфейс. Чтобы его увидеть, необходимо запустить [встроенный в PHP веб-сервер](http://php.net/manual/ru/features.commandline.webserver.php) командой: 
 
 ```
-php -S 127.0.0.1:9001 public/index.php
+php -S 127.0.0.1:9001 -t public public/index.php
 ```
 
 После этого можно будет открыть в браузере страницу http://127.0.0.1:9001/ и увидеть список задач. 
