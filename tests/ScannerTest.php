@@ -179,13 +179,13 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
             [$range2, 'y']
         ];
 
-        $this->setExpectedException(TextException::class);
+        $this->expectException(TextException::class);
         $text->generateOutput($replace);
     }
 
     public function testCannotGenerateOutputWithInvalidRange()
     {
-        $this->setExpectedException(TextException::class);
+        $this->expectException(TextException::class);
 
         $text = TokenArray::fromTokens(array('<?php'));
         $range1 = Range::createIncluding($text, 0, 100);

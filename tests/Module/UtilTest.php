@@ -66,7 +66,7 @@ class UtilTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromCsvFailsWithIncorrectData($csvString)
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->util->fromCsv($csvString);
     }
     
