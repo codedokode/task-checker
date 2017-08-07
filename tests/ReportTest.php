@@ -14,7 +14,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
         $step = new Step("Test");
         $step->setSuccess();
 
-        $this->setExpectedException(\LogicException::class);
+        $this->expectException(\LogicException::class);
         $step->setFailed(new AssertionFailedError("Test error"));
     }
 
@@ -25,7 +25,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
         $child = new Step("Child");
 
-        $this->setExpectedException(\LogicException::class);
+        $this->expectException(\LogicException::class);
         $step->addChild($child);
     }
 
