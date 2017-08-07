@@ -9,8 +9,9 @@ use Silex\Provider\CsrfServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use TaskChecker\Codebot\EvalClient;
 use TaskChecker\ModuleFactory;
+use TaskChecker\ProblemParser\Parser;
+use TaskChecker\ProblemService;
 use TaskChecker\Reporter\TwigPrinter;
-use TaskChecker\TaskListManager;
 use TaskChecker\Web\TcUrlGenerator;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
@@ -47,14 +48,19 @@ $app['module_factory'] = function ($c) {
     return new ModuleFactory($c['codebot_client']);
 };
 
-$app['task_list_manager'] = function ($c) {
-    return new TaskListManager;
+$app['problem_parser'] = function ($c) {
+    return new Parser;
+};
+
+$app['problem_service'] = function ($c) {
+    return new ProblemService;
 };
 
 $app['renderer'] = $app->protect(function ($template, array $args = []) use ($app) {
     // Глобальные переменные, нужные в каждом запросе
-    $taskListManager = $app['task_list_manager'];
-    $args['gTasks'] = $taskListManager->getTaskList();
+    $problemService = $app['problem_service'];
+    $args['gProblems'] = $problemService->getProblemList();
+    $args['gProblemsWithoutTester'] = $problemService->getProblemWithoutTesterList();
     $args['gUrlGenerator'] = $app['tc_url_generator'];
     $twig = $app['twig'];
 

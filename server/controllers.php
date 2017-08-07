@@ -20,14 +20,14 @@ $app->get('/', function (Application $app) {
     return $renderer('index.html.twig');
 })->bind('index');
 
-$app->match('/check/{taskId}', 
-    function (Application $app, Request $request, $taskId) use ($csrfService) {
+$app->match('/check/{problemId}', 
+    function (Application $app, Request $request, $problemId) use ($csrfService) {
     
-    $taskListManager = $app['task_list_manager'];
-    $task = $taskListManager->getTaskById($taskId);
+    $problemService = $app['problem_service'];
+    $problem = $problemService->getProblemById($problemId);
 
-    if (!$task) {
-        $app->abort(404, "Invalid task id");
+    if (!$problem) {
+        $app->abort(404, "Invalid problem id");
     }
 
     $error = '';
@@ -41,9 +41,9 @@ $app->match('/check/{taskId}',
 
         if (!$error) {
             // Run test
-            $test = $taskListManager->createTesterForTask(
+            $test = $problemService->createTesterForProblem(
                 $app['module_factory'],
-                $task
+                $problem
             );
 
             $report = $test->run($source);
@@ -55,8 +55,8 @@ $app->match('/check/{taskId}',
     $csrfToken = $app['csrf_service']->makeToken();
     $twigPrinter = $app['twig_printer'];
 
-    return $renderer('viewTask.html.twig', [
-        'task'      =>  $task,
+    return $renderer('viewProblem.html.twig', [
+        'problem'   =>  $problem,
         'source'    =>  $source,
         'error'     =>  $error,
         'report'    =>  $report,
@@ -65,7 +65,7 @@ $app->match('/check/{taskId}',
         'twigPrinter'=> $twigPrinter
     ]);
 
-})->method('GET|POST')->bind('viewTask');
+})->method('GET|POST')->bind('viewProblem');
 
 function validateCheckRequest($code) {
     $code = trim($code);

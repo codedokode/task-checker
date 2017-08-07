@@ -43,4 +43,10 @@ class TestHelper
         }
     }
     
+    public static function getAssetsDir()
+    {
+        $dir = dirname(__DIR__) . '/assets';
+        assert(is_dir($dir));
+        return $dir;        
+    }
 }

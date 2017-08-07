@@ -1,0 +1,46 @@
+[
+    {
+        "id": "dice-with-robot",
+        "name": "Игра в кубики",
+        "description": "\n            <div class=\"b-problem\">\n                <p>W4.1 Допиши игру с кубиками<\/p>\n            <\/div>\n            \n            <img src=\"http:\/\/book.example.com\/i\/php-noob-13.png\" alt=\"\">",
+        "relativeUrl": "\/l1\/conditions.html#problem-dice-with-robot",
+        "codeSample": null,
+        "codeSampleUrl": null,
+        "hints": [],
+        "examples": []
+    },
+    {
+        "id": "exchange-dollars",
+        "name": "Перевод долларов в рубли",
+        "description": "\n            <div class=\"b-problem\">\n                <p>W2. Допиши программу, переводящую доллары в рубли, чтобы \n                    она работала правильно. Заготовку \n                    можешь взять по ссылке <a href=\"http:\/\/ideone.com\/CsCOBV\" target=\"_blank\">http:\/\/ideone.com\/CsCOBV<\/a> или  \n                    <a href=\"http:\/\/paste2.org\/pE927NmC\" target=\"_blank\">http:\/\/paste2.org\/pE927NmC<\/a><\/p>\n            <\/div>\n\n            <img src=\"http:\/\/book.example.com\/i\/l1\/l1-vars-convert.png\" alt=\"Задачка на перевод рублей в доллары\">",
+        "relativeUrl": "\/l1\/variables.html#problem-exchange-dollars",
+        "codeSample": null,
+        "codeSampleUrl": null,
+        "hints": [],
+        "examples": []
+    },
+    {
+        "id": "dice",
+        "name": "Задача про кубик",
+        "description": "\n            <p>W3. Напиши программу, которая имитирует бросок кубика \n            (генерирует случайное число от 1 до 6 и выводит его).<\/p>\n        ",
+        "relativeUrl": "\/l1\/variables.html#problem-dice",
+        "codeSample": null,
+        "codeSampleUrl": null,
+        "hints": [
+            "чтобы получить случайное число, \n            <span class=\"spoiler\">есть функция mt_rand()<\/span>."
+        ],
+        "examples": []
+    },
+    {
+        "id": "hello-world",
+        "name": "Первая программа",
+        "description": "\n            <div class=\"b-problem\">\n                W1. Сделай и запусти свою первую программу на PHP. \n                Программа должна вывести какой-нибудь текст.\n\n                <!-- http:\/\/ideone.com\/ePWWhW -->\n            <\/div>    \n        ",
+        "relativeUrl": "\/index.html#problem-hello-world",
+        "codeSample": null,
+        "codeSampleUrl": null,
+        "hints": [
+            "\n            <p>Если вместо результата ты видишь сообщения об ошибках, проверь свой код — может, ты кавычку не такую\n                написал или где-то букву пропустил? Сообщения об ошибках выглядят обычно так: <\/p>\n\n            <img src=\"http:\/\/book.example.com\/i\/l0\/l0-mistake.png\" alt=\"Сообщение об ошибке\">"
+        ],
+        "examples": []
+    }
+]

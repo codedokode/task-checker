@@ -12,6 +12,9 @@ use TaskChecker\Errors\BaseTestError;
  * Пример шага: "проверяем, что вывод программы не пуст".
  *
  * Шаги могут быть вложены друг в друга и образовывать дерево.
+ *
+ * После того, как шаг завершен (успешно или с ошибкой), он 
+ * становится неизменяемым.
  */
 class Step
 {
@@ -71,6 +74,7 @@ class Step
     public function addChild(Step $step)
     {
         $this->checkIsNotFinalized();
+        assert(!$step->parent);
         $step->parent = $this;
         $this->children[] = $step;
     }

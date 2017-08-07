@@ -2,58 +2,58 @@
 
 namespace Tests\TaskChecker;
 
+use TaskChecker\Problem;
 use TaskChecker\Reporter\ConsolePrinter;
-use TaskChecker\Task;
 use Tests\TaskChecker\Helper\TestHelper;
 
 /**
  * Test all scenarios against solution examples
  */
-class ScenarionsIntegrationTest extends \PHPUnit_Framework_TestCase
+class ScenariosIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     public function testExampleSolutions()
     {
-        $taskListMgr = TestHelper::getService('task_list_manager');
-        $tasks = $taskListMgr->getTaskList();
+        $problemService = TestHelper::getService('problem_service');
+        $problems = $problemService->getProblemList();
 
-        foreach ($tasks as $task) {
+        foreach ($problems as $problem) {
 
-            $taskDir = $taskListMgr->getTaskScenarioDirectory($task);
-            assert(is_dir($taskDir));
+            $scenarioDir = $problemService->getScenariosDirectory($problem);
+            assert(is_dir($scenarioDir));
 
-            $passExamples = glob("$taskDir/pass/*");
-            $failExamples = glob("$taskDir/fail/*");
+            $passExamples = glob("$scenarioDir/pass/*");
+            $failExamples = glob("$scenarioDir/fail/*");
 
             printf(
-                "Check task %s, %d pass examples, %s fail examples\n", 
-                $task->getId(),
+                "Check problem %s, %d pass examples, %s fail examples\n", 
+                $problem->getId(),
                 count($passExamples),
                 count($failExamples)
             );
 
             foreach ($passExamples as $passExampleFile) {
-                $this->checkSolution($task, $passExampleFile, true);
+                $this->checkSolution($problem, $passExampleFile, true);
             }
 
             foreach ($failExamples as $failExampleFile) {
-                $this->checkSolution($task, $failExampleFile, false);
+                $this->checkSolution($problem, $failExampleFile, false);
             }
         }
     }
 
-    private function checkSolution(Task $task, $solutionFile, $expectedResult)
+    private function checkSolution(Problem $problem, $solutionFile, $expectedResult)
     {
-        $taskListMgr = TestHelper::getService('task_list_manager');
+        $problemService = TestHelper::getService('problem_service');
         $moduleFactory = TestHelper::getService('module_factory');
 
-        $tester = $taskListMgr->createTesterForTask($moduleFactory, $task);
+        $tester = $problemService->createTesterForProblem($moduleFactory, $problem);
         $code = file_get_contents($solutionFile);
 
         $report = $tester->run($code);
 
         if ($expectedResult !== $report->isSuccessful()) {
 
-            echo "Report from test {$task->getId()}:\n";
+            echo "Report from test {$problem->getId()}:\n";
 
             $cp = new ConsolePrinter;
             $cp->printReport($report);
@@ -65,7 +65,7 @@ class ScenarionsIntegrationTest extends \PHPUnit_Framework_TestCase
             sprintf(
                 "expected solution '%s' for test '%s' to end with %s",
                 $solutionFile,
-                $task->getId(),
+                $problem->getId(),
                 $expectedResult ? 'success' : 'failure'
             )
         );

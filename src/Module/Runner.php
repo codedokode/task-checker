@@ -12,7 +12,6 @@ use TaskChecker\Reporter\Report;
 use TaskChecker\RunnerQueuedTask;
 use TaskChecker\Step\RunScriptStep;
 use TaskChecker\Step\Step;
-use TaskChecker\Task;
 use TaskChecker\TextScanner\TokenArray;
 use TaskChecker\TextScanner\VariableInjector;
 

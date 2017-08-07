@@ -11,8 +11,18 @@
 этого выберите интересующую вас задачу из списка:</p>
 
 <ul>
-    {% for task in gTasks %}
-        <li><a href="{{ gUrlGenerator.getViewTaskUrl(task) }}">{{ task.getTitle() }}</a></li>
+    {% for problem in gProblems %}
+        <li><a href="{{ gUrlGenerator.getViewProblemUrl(problem) }}">{{ problem.getName() }}</a></li>
     {% endfor %}
 </ul>
+
+{% if gProblemsWithoutTester %}
+    <h4>Пока не работающие задачи</h4>
+
+    <ul>
+    {% for problem in gProblemsWithoutTester %}
+        <li><a href="{{ gUrlGenerator.getViewProblemUrl(problem) }}">{{ problem.getName() }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
 {% endblock %}

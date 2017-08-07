@@ -3,7 +3,7 @@
 namespace TaskChecker\Web;
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use TaskChecker\Task;
+use TaskChecker\Problem;
 
 class TcUrlGenerator 
 {
@@ -20,8 +20,8 @@ class TcUrlGenerator
         return $this->urlGenerator->generate($name, $args);
     }
 
-    public function getViewTaskUrl(Task $task)
+    public function getViewProblemUrl(Problem $problem)
     {
-        return $this->generate('viewTask', ['taskId' => $task->getSlug()]);
+        return $this->generate('viewProblem', ['problemId' => $problem->getSlug()]);
     }
 }

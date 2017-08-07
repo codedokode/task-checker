@@ -1,14 +1,50 @@
 {% extends 'layout.html.twig' %}
 
 {% block styles %}
-<link rel="stylesheet" href="/css/viewTask.css">
+<link rel="stylesheet" href="/css/viewProblem.css">
 <link rel="stylesheet" href="/css/reportPrinter.css">
 {% endblock %}
 
 {% block content %}
-    <h1>Задача: {{ task.getTitle() }}</h1>
+    <h1>Задача: {{ problem.getName() }}</h1>
 
-    <p>Описание: {{ task.getDescription() }}</p>
+    <h3>Описание</h3>
+
+    <div>
+        {{ problem.getDescription() | raw }}
+    </div>
+
+    {% if problem.getCodeSample() %}
+        <h3>Пример кода:</h3>
+        <pre><code>{{ problem.getCodeSample() }}</code></pre>
+    {% endif %}
+
+    {% if problem.getCodeSampleUrl() %}
+        <p>Получить пример кода можно по ссылке 
+            <a href="{{ problem.getCodeSampleUrl() }}" 
+                target="_blank">{{ problem.getCodeSampleUrl() }}</a>
+        </p>
+    {% endif %}
+
+    {% if problem.getHints() %}
+        <h3>Подсказки:</h3>
+
+        <ul>
+            {% for hint in problem.getHints() %}
+                <li>{{ hint | raw }}</li>                
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if problem.getExamples() %}
+        <h3>Примеры данных:</h3>
+
+        <ul>
+            {% for example in problem.getExamples() %}
+                <li>{{ example | raw }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     {% if wasChecked %}
         <h2>
